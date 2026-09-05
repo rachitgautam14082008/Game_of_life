@@ -14,10 +14,19 @@ def count_neighbors(grid, row, col):
     """
     
     alive_count = 0
+    rows = len(grid)
+    cols = len(grid[0]) if rows > 0 else 0
     
-    # TODO: Implement your neighbor-counting logic here!
+    for dx in (-1, 0, 1):
+        for dy in (-1, 0, 1):
+            if dx == 0 and dy == 0:
+                continue  # skip the cell itself
+            
+            x, y = row + dx, col + dy
 
-    return alive_count
+            if 0 <= x < rows and 0 <= y < cols: #For edge of the grid
+                alive_count += grid[x][y] #Taking advantage of representing neighbour as 1
+    return (alive_count)
 
 #---------------------------- TASK 2 ----------------------------
 def compute_next_generation(grid):
@@ -42,8 +51,17 @@ def compute_next_generation(grid):
     # Create a new blank grid of the same size, filled with 0s (dead cells)
     next_grid = [[0 for _ in range(cols)] for _ in range(rows)]
     
-    # TODO: Iterate through every cell in the `grid`.
-    # TODO: Use your `count_neighbors` function to find out how many neighbors it has.
-    # TODO: Apply the 4 Rules of Life to determine if it should be 1 (alive) or 0 (dead) in `next_grid`.
-
+    for x in range(rows):
+        for y in range(cols):
+            population = count_neighbors(grid, x, y)
+            old_status = (grid[x])[y]
+            if population > 3: #Overpopulation
+                (next_grid[x])[y] = 0
+            elif population < 2: #Underpopulation t
+                (next_grid[x])[y] = 0
+            elif 1< population < 4 and old_status == 1: #Survival
+                (next_grid[x])[y] = 1
+            elif (population == 3) and old_status == 0: #Repopulation
+                (next_grid[x])[y] = 1
+            
     return next_grid
